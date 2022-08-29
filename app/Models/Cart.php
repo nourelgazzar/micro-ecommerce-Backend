@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Cart extends Model
 {
     use HasFactory;
+
+    public function product()
+    {
+        return $this->belongsToMany('App\Models\Product');
+    }
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }

@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class AdminPhoneNumber extends Model
 {
     use HasFactory;
+
+    public function admin()
+    {
+        return $this->belongsTo('App\Models\Admin');
+    }
 }
