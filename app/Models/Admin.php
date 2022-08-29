@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class Admin extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -41,20 +40,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function cart()
+
+    public function adminPhoneNumber()
     {
-        return $this->hasOne('App\Models\cart');
-    }
-    public function userPhoneBook()
-    {
-        return $this->hasMany('App\Models\UserPhoneNumber');
-    }
-    public function userAddressBook()
-    {
-        return $this->belongsToMany('App\Models\UserAddressBook');
-    }
-    public function order()
-    {
-        return $this->hasMany('App\Models\Order');
+        return $this->hasMany('App\Models\AdminPhoneNumber');
     }
 }
