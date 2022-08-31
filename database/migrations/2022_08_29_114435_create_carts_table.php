@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('carts', function (Blueprint $table) {
-            $table->foreign('user_id')->references('user_id')->on('User');
-            $table->foreign('product_id')->references('product_id')->on('Product');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->integer('number_items');
             $table->timestamps();
         });

@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('user_address_books', function (Blueprint $table) {
-            $table->foreign('user_id')->references('user_id')->on('User');
+            $table->increments('id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->string('address');
             $table->string('title');
             $table->text('notes');

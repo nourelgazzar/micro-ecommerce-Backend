@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('admin_phone_numbers', function (Blueprint $table) {
-            $table->foreign('admin_id')->references('admin_id')->on('Admin');
+            $table->increments('id');
+            $table->foreign('admin_id')->references('id')->on('admins');
             $table->string('phone_number');
             $table->string('type');
             $table->timestamps();
