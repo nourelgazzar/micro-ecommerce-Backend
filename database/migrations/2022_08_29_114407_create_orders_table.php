@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->increments('id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->id();
+            $table->foreignId('user_id')->constrained('users');
             $table->integer('price');
             $table->string('invoice_number');
             $table->timestamps();

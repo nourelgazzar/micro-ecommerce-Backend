@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('user_phone_numbers', function (Blueprint $table) {
-            $table->increments('id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->id();
+            $table->foreignId('user_id')->constrained('users');
             $table->string('phone_number');
             $table->string('type');
             $table->timestamps();
