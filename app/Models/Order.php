@@ -12,7 +12,7 @@ class Order extends Model
     {
         return $this->hasOne('App\Models\OrderDetails');
     }
-    public function product()
+    public function products()
     {
         return $this->belongsToMany('App\Models\Product');
     }

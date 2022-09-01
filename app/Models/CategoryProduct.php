@@ -9,11 +9,11 @@ class CategoryProduct extends Model
 {
     use HasFactory;
 
-    public function category()
+    public function categories()
     {
         return $this->belongsToMany('App\Models\Category');
     }
-    public function product()
+    public function products()
     {
         return $this->belongsToMany('App\Models\Product');
     }

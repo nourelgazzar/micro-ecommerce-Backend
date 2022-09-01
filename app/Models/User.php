@@ -51,7 +51,7 @@ class User extends Authenticatable
     }
     public function userAddressBook()
     {
-        return $this->belongsToMany('App\Models\UserAddressBook');
+        return $this->hasMany('App\Models\UserAddressBook');
     }
     public function order()
     {
