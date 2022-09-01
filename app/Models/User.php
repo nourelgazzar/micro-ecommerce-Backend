@@ -43,9 +43,9 @@ class User extends Authenticatable
     ];
     public function cart()
     {
-        return $this->hasOne('App\Models\cart');
+        return $this->hasOne('App\Models\Cart');
     }
-    public function userPhoneBook()
+    public function userPhoneNumber()
     {
         return $this->hasMany('App\Models\UserPhoneNumber');
     }
