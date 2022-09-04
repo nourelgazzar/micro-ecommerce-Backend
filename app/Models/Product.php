@@ -13,18 +13,22 @@ class Product extends Model
     {
         return $this->belongsTo('App\Models\Brand');
     }
+
     public function cateogries()
     {
         return $this->belongsToMany('App\Models\Category');
     }
+
     public function cartDetails()
     {
         return $this->belongsToMany('App\Models\CartDetail');
     }
+
     public function orderDetails()
     {
         return $this->belongsToMany('App\Models\OrderDetails');
     }
+
     public function order()
     {
         return $this->belongsToMany('App\Models\Order');

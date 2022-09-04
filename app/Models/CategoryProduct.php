@@ -13,6 +13,7 @@ class CategoryProduct extends Model
     {
         return $this->belongsToMany('App\Models\Category');
     }
+
     public function products()
     {
         return $this->belongsToMany('App\Models\Product');
