@@ -41,18 +41,22 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
     public function cart()
     {
-        return $this->hasOne('App\Models\cart');
+        return $this->hasOne('App\Models\Cart');
     }
-    public function userPhoneBook()
+
+    public function userPhoneNumber()
     {
         return $this->hasMany('App\Models\UserPhoneNumber');
     }
+
     public function userAddressBook()
     {
-        return $this->belongsToMany('App\Models\UserAddressBook');
+        return $this->hasMany('App\Models\UserAddressBook');
     }
+
     public function order()
     {
         return $this->hasMany('App\Models\Order');

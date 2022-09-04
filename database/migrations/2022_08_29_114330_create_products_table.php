@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->increments('id');
-            $table->foreign('brand_id')->references('id')->on('brands');
+            $table->id();
+            $table->foreignId('brand_id')->constrained('brands');
             $table->string('name');
             $table->integer('price');
             $table->integer('quantity');
