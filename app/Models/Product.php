@@ -11,22 +11,26 @@ class Product extends Model
 
     public function brand()
     {
-        return $this->hasMany('App\Models\Brand');
+        return $this->belongsTo('App\Models\Brand');
     }
-    public function cateogryProduct()
+
+    public function cateogries()
     {
-        return $this->belongsToMany('App\Models\CategoryProduct');
+        return $this->belongsToMany('App\Models\Category');
     }
-    public function cart()
+
+    public function cartDetails()
     {
-        return $this->belongsToMany('App\Models\Cart');
+        return $this->belongsToMany('App\Models\CartDetail');
     }
+
     public function orderDetails()
     {
-        return $this->belongsTo('App\Models\OrderDetails');
+        return $this->belongsToMany('App\Models\OrderDetails');
     }
+
     public function order()
     {
-        return $this->belongsTo('App\Models\Order');
+        return $this->belongsToMany('App\Models\Order');
     }
 }

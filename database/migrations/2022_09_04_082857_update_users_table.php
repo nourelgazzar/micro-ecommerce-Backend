@@ -13,13 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_address_books', function (Blueprint $table) {
-            $table->increments('id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->string('address');
-            $table->string('title');
-            $table->text('notes');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('cart_id')->constrained('carts');
         });
     }
 
@@ -30,6 +25,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_address_books');
+        //
     }
 };

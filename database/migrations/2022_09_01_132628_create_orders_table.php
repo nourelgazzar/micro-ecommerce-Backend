@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('admin_phone_numbers', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('admin_id')->constrained('admins');
-            $table->string('phone_number');
-            $table->string('type');
+            $table->foreignId('user_id')->constrained('users');
+            $table->integer('price');
+            $table->string('invoice_number');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('admin_phone_numbers');
+        Schema::dropIfExists('orders');
     }
 };
