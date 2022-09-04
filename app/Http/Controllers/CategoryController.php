@@ -11,7 +11,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name' => array('required', 'string', 'max:40','regex:/(^([a-zA-Z]+)(\d+)?$)/u')
         ]);
 
         if ($validator->fails()) {
