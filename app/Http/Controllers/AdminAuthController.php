@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Admin;
-use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AdminAuthController extends Controller
@@ -12,50 +11,41 @@ class AdminAuthController extends Controller
     public function register(Request $request)
     {
         $fields = $request->validate([
-            'first_name' => array('required', 'string', 'max:40','regex:/(^[a-zA-Z])/u'),
-            'last_name' => array('required', 'string', 'max:40','regex:/(^[a-zA-Z])/u'),
-            'email' => array('required', 'string', 'unique:users,email', 'email', 'max:40'),
-            'password' => array('required', 'string', 'confirmed', 'max:40')
+            'first_name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
+            'last_name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
+            'email' => ['required', 'string', 'unique:users,email', 'email', 'max:40'],
+            'password' => ['required', 'string', 'confirmed', 'max:40'],
         ]);
 
         $admin = Admin::create([
             'first_name' => $fields['first_name'],
             'last_name' => $fields['last_name'],
             'email' => $fields['email'],
-            'password' => bcrypt($fields['password'])
+            'password' => bcrypt($fields['password']),
         ]);
 
         $token = $admin->createToken('resumetoken')->plainTextToken;
 
         $response = [
             'admin' => $admin,
-            'token' => $token
+            'token' => $token,
         ];
 
         return response($response, 201);
-
     }
 
     public function login(Request $request)
     {
         $fields = $request->validate([
-            'email' => array('required', 'string', 'email', 'max:40'),
-            'password' => array('required', 'string', 'max:40')
+            'email' => ['required', 'string', 'email', 'max:40'],
+            'password' => ['required', 'string', 'max:40'],
         ]);
 
         $admin = Admin::where('email', $fields['email'])->first();
-        if (!$admin)
-        {
+        if (! $admin || ! Hash::check($fields['password'], $admin->password)) {
             return response(
                 [
-                    'Response' => 'Please enter the right email!'
-                ], 401);
-        }
-        else if (!Hash::check($fields['password'], $admin->password))
-        {
-            return response(
-                [
-                    'Response' => 'Please enter the right password!'
+                    'Response' => 'Please enter the right email or password!',
                 ], 401);
         }
 
@@ -63,19 +53,18 @@ class AdminAuthController extends Controller
 
         $response = [
             'admin' => $admin,
-            'token' => $token
+            'token' => $token,
         ];
 
         return response($response, 201);
-
     }
-
 
     public function logout(Request $request)
     {
         auth()->user()->tokens()->delete();
+
         return [
-            'Response' => 'Logged out'
+            'Response' => 'Logged out',
         ];
     }
 }
