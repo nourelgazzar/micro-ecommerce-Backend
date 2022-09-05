@@ -10,13 +10,14 @@ class CategoryController extends Controller
 {
     public function store(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name' => array('required', 'string', 'max:40','regex:/(^([a-zA-Z]+)(\d+)?$)/u')
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 400,
+                'status' => 422,
                 'errors' => $validator->messages(),
             ]);
         } else {
