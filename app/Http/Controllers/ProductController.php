@@ -18,7 +18,7 @@ class ProductController extends Controller
             'quantity' => array('required', 'integer', 'max:999'),
             'description' => array('required', 'string', 'max:500'),
             'image' => array('required'),
-            'category_id' => array('required'),
+            'categories_ids' => array('required'),
         ]);
 
         if ($validator->fails()) {
@@ -38,10 +38,10 @@ class ProductController extends Controller
 
             $product->save();
 
-            $loopHelper = count($request->category_id) - 1;
+            $loopHelper = count($request->categories_ids) - 1;
             for ($i = 0; $i <= $loopHelper; $i++) {
                 $categoryProduct = new CategoryProduct;
-                $categoryProduct->category_id = $request->category_id[$i];
+                $categoryProduct->category_id = $request->categories_ids[$i];
                 $categoryProduct->product_id = $product->id;
                 $categoryProduct->save();
             }
