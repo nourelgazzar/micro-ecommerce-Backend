@@ -1,4 +1,4 @@
-ta<?php
+<?php
 
 return [
 
