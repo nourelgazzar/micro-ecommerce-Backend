@@ -100,7 +100,7 @@ class BrandController extends Controller
     public function destroy($id)
     {
         $data = Brand::find($id);
-        if ($data == null) {
+        if (is_null($var)) {
             return response()->json([
                 'status' => 404,
                 'errors' => "Item Not Found!",
