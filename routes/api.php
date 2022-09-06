@@ -18,7 +18,7 @@ Route::post('/admin/register', [AdminAuthController::class, 'register']);
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
 
 Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
-    Route::post('store/category', [CategoryController::class, 'store']);
+    Route::post('/admin/categories', [CategoryController::class, 'store']);
 });
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
