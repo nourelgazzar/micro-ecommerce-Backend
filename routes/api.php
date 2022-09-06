@@ -20,11 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('store-category', [CategoryController::class, 'store']);
-<<<<<<< HEAD
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::post('/products', [ProductController::class, 'store']);
+});
+
 //(add-new-brand)
 Route::apiResource('brands', BrandController::class);
-=======
-
-Route::post('store-product', [ProductController::class, 'store']);
->>>>>>> 05e81fe29c6f00dfd0b36b3d1a3f292d48929d0c
