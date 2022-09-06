@@ -29,7 +29,7 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
         ]);
 
         if ($validator->fails()) {
@@ -70,7 +70,7 @@ class BrandController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -98,7 +98,7 @@ class BrandController extends Controller
     public function destroy($id)
     {
         $data = Brand::find($id);
-        if (is_null($var)) {
+        if (is_null($data)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'Item Not Found!',
