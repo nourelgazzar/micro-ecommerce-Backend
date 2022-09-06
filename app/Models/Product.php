@@ -14,7 +14,7 @@ class Product extends Model
         return $this->belongsTo('App\Models\Brand');
     }
 
-    public function cateogries()
+    public function categories()
     {
         return $this->belongsToMany('App\Models\Category');
     }
