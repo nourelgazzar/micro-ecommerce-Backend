@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +19,16 @@ use Illuminate\Support\Facades\Route;
 Route::post('/admin/register', [AdminAuthController::class, 'register']);
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
 
-Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
-    Route::post('/admin/categories', [CategoryController::class, 'store']);
-});
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
 });
+
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin']], function () {
+    Route::post('categories', [CategoryController::class, 'store']);
+    Route::post('products', [ProductController::class, 'store']);
+    Route::apiResource('brands', BrandController::class);
+});
+
+
+
+
