@@ -29,6 +29,7 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin
     Route::get('products/', [ProductController::class, 'index']);
     Route::post('products/{id}', [ProductController::class, 'show']);
     Route::delete('products/{id}', [ProductController::class, 'delete']);
+    Route::get('products/search/{name}', [ProductController::class, 'search']);
     Route::put('products/{id}', [ProductController::class, 'update']);
     Route::apiResource('brands', BrandController::class);
 });

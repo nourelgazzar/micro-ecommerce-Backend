@@ -117,4 +117,17 @@ class ProductController extends Controller
             ]);
         }
     }
+    public function search($name)
+    {
+        $data = Product::where('name', 'like', '%'.$name.'%')->get();
+
+        if (! count($data)) {
+            return response()->json([
+                'status' => 404,
+                'errors' => 'No Product found to be shown!',
+            ]);
+        }
+
+        return response()->json($data, 200);
+    }
 }
