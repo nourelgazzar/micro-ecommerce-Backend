@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\CategoryController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,15 +16,19 @@ use App\Http\Controllers\ProductController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/admin/register', [AdminAuthController::class, 'register']);
+Route::post('/admin/login', [AdminAuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
 });
 
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
-    Route::post('/categories', [CategoryController::class, 'store']);
-    Route::post('/products', [ProductController::class, 'store']);
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin']], function () {
+    Route::post('categories', [CategoryController::class, 'store']);
+    Route::post('products', [ProductController::class, 'store']);
+    Route::apiResource('brands', BrandController::class);
 });
 
-//(add-new-brand)
-Route::apiResource('brands', BrandController::class);
+
+
+

@@ -12,7 +12,7 @@ class CategoryController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'name' => array('required', 'string', 'max:40','regex:/(^([a-zA-Z]+)(\d+)?$)/u')
+            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
         ]);
 
         if ($validator->fails()) {
