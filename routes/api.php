@@ -19,7 +19,7 @@ use App\Http\Controllers\ProductController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::post('admin/categories', [CategoryController::class, 'store']);
-
-Route::post('admin/products', [ProductController::class, 'store']);
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::post('/products', [ProductController::class, 'store']);
+});
