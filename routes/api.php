@@ -24,7 +24,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 });
 
 Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin']], function () {
+    Route::get('categories', [CategoryController::class, 'index']);
     Route::post('categories', [CategoryController::class, 'store']);
-    Route::post('products', [ProductController::class, 'store']);
+    Route::get('categories/search/{name}', [CategoryController::class, 'search']);
+    Route::get('categories/{id}', [CategoryController::class, 'show']);
+    Route::put('categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('categories/{id}', [CategoryController::class, 'destroy']);
+
     Route::apiResource('brands', BrandController::class);
 });
