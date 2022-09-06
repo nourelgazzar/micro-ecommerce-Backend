@@ -12,7 +12,7 @@ class AdminAuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-        
+
             'first_name' => ['required', 'string', 'max:20', 'regex:/(^([a-zA-Z]+)?$)/u'],
             'last_name' => ['required', 'string', 'max:20', 'regex:/(^([a-zA-Z]+)?$)/u'],
             'email' => ['required', 'string', 'unique:users,email', 'email', 'max:40'],
@@ -31,14 +31,14 @@ class AdminAuthController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
-    
+
         $token = $admin->createToken('resumetoken')->plainTextToken;
-    
+
         $response = [
             'admin' => $admin,
             'token' => $token,
         ];
-    
+
         return response($response, 201);
     }
 

@@ -12,6 +12,7 @@ class CategoryController extends Controller
     {
         return Category::all();
     }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -38,14 +39,13 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = Category::find($id);
-        if (is_null($category))
-        {
+        if (is_null($category)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'No category found to be shown!',
             ]);
         }
-        
+
         return response()->json([
             'status' => 200,
             'category' => $category,
@@ -72,24 +72,21 @@ class CategoryController extends Controller
             ]);
         } else {
             $category = Category::find($id);
-            if (is_null($category) || empty($category))
-            {
+            if (is_null($category) || empty($category)) {
                 return response()->json([
                     'status' => 404,
                     'errors' => 'No category found to be updated!',
                 ]);
-            }
-            else
-            {
-                $category->name = $request->name;    
+            } else {
+                $category->name = $request->name;
                 $category->save();
+
                 return response()->json([
                     'status' => 200,
                     'category' => $category,
                 ]);
             }
         }
-       
     }
 
     /**
@@ -101,21 +98,19 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $category = Category::find($id);
-        if (is_null($category) || empty($category))
-       {
+        if (is_null($category) || empty($category)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'No category found to be deleted!',
             ]);
-       }
-       else
-       {
-           $category->destroy($id);
-           return response()->json([
-            'status' => 200,
-            'message' => 'The category has been deleted!',
-        ]);
-       }
+        } else {
+            $category->destroy($id);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'The category has been deleted!',
+            ]);
+        }
     }
 
     /**
@@ -127,14 +122,14 @@ class CategoryController extends Controller
     public function search($name)
     {
         $category = Category::where('name', 'like', '%'.$name.'%')->get();
-        
-        if (!count($category))
-       {
+
+        if (! count($category)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'No category found to be shown!',
             ]);
-       }
+        }
+
         return response()->json([
             'status' => 200,
             'category' => $category,
