@@ -1,11 +1,10 @@
 <?php
 
 use App\Http\Controllers\AdminAuthController;
-use App\Http\Controllers\CategoryController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BrandController;
-
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +28,3 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin
     Route::post('products', [ProductController::class, 'store']);
     Route::apiResource('brands', BrandController::class);
 });
-
-
-
-

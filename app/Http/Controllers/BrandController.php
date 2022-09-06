@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Brand;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class BrandController extends Controller
@@ -16,8 +16,8 @@ class BrandController extends Controller
     public function index()
     {
         $data = Brand::all();
-        return response()->json($data,200);
-    
+
+        return response()->json($data, 200);
     }
 
     /**
@@ -87,8 +87,6 @@ class BrandController extends Controller
                 'message' => 'Brand updated successfully',
             ]);
         }
-       
-
     }
 
     /**
@@ -103,7 +101,7 @@ class BrandController extends Controller
         if (is_null($var)) {
             return response()->json([
                 'status' => 404,
-                'errors' => "Item Not Found!",
+                'errors' => 'Item Not Found!',
             ]);
         } else {
             $data->delete();

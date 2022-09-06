@@ -11,13 +11,13 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => array('required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'),
-            'brand_id' => array('required'),
-            'price' => array('required', 'integer', 'max:999999'),
-            'quantity' => array('required', 'integer', 'max:999'),
-            'description' => array('required', 'string', 'max:500'),
-            'image' => array('required'),
-            'categories_ids' => array('required'),
+            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
+            'brand_id' => ['required'],
+            'price' => ['required', 'integer', 'max:999999'],
+            'quantity' => ['required', 'integer', 'max:999'],
+            'description' => ['required', 'string', 'max:500'],
+            'image' => ['required'],
+            'categories_ids' => ['required'],
         ]);
 
         if ($validator->fails()) {

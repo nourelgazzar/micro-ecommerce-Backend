@@ -10,7 +10,6 @@ class CategoryController extends Controller
 {
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
         ]);
