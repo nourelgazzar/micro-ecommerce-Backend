@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -38,13 +37,7 @@ class ProductController extends Controller
 
             $product->save();
 
-            $loopHelper = count($request->categories_ids) - 1;
-            for ($i = 0; $i <= $loopHelper; $i++) {
-                $categoryProduct = new CategoryProduct;
-                $categoryProduct->category_id = $request->categories_ids[$i];
-                $categoryProduct->product_id = $product->id;
-                $categoryProduct->save();
-            }
+            $product->categories()->attach($request->categories_ids);
 
             return response()->json([
                 'status' => 201,
