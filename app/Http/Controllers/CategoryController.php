@@ -88,12 +88,7 @@ class CategoryController extends Controller
                 'errors' => 'No category found to be deleted!',
             ]);
         } else {
-            $category->destroy($id);
-            $categoryProducts = CategoryProduct::find($id);
-            for ($i = 0; $i < count($categoryProducts); $i++) {
-                $categoryProducts[$i]->category_id = 1;
-            }
-
+            $category->delele();
             return response()->json([
                 'status' => 200,
                 'message' => 'The category has been deleted!',
