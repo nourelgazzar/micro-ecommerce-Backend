@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::post('/admin/register', [AdminAuthController::class, 'register']);
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
 
@@ -24,7 +26,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 });
 
 Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin']], function () {
-
     Route::get('categories', [CategoryController::class, 'index']);
     Route::post('categories', [CategoryController::class, 'store']);
     Route::get('categories/search/{name}', [CategoryController::class, 'search']);
@@ -32,13 +33,13 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin
     Route::put('categories/{id}', [CategoryController::class, 'update']);
     Route::delete('categories/{id}', [CategoryController::class, 'destroy']);
 
+
     Route::group(['prefix' => 'products/'],function () {
         Route::post('', [ProductController::class, 'store']);
         Route::get('', [ProductController::class, 'index']);
         Route::post('{id}', [ProductController::class, 'show']);
         Route::delete('{id}', [ProductController::class, 'delete']);
         Route::get('search/{name}', [ProductController::class, 'search']);
-      //  Route::get('homesearch/{name}', [ProductController::class, 'searchByAll']);
         Route::put('{id}', [ProductController::class, 'update']);
     }
     );

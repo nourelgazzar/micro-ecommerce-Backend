@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -58,7 +57,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:40|regex:/(^([a-zA-Z]+)(\d+)?$)/u|unique:categories',
         ]);
         $category = Category::find($id);
-        if (! $category || empty($category)) {
+        if (!$category || empty($category)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'No category found to be updated!',
@@ -88,11 +87,7 @@ class CategoryController extends Controller
                 'errors' => 'No category found to be deleted!',
             ]);
         } else {
-            $category->destroy($id);
-            $categoryProducts = CategoryProduct::find($id);
-            for ($i = 0; $i < count($categoryProducts); $i++) {
-                $categoryProducts[$i]->category_id = 1;
-            }
+            $category->delete();
 
             return response()->json([
                 'status' => 200,
@@ -109,7 +104,7 @@ class CategoryController extends Controller
      */
     public function search($name)
     {
-        $category = Category::where('name', 'like', '%'.$name.'%')->get();
+        $category = Category::where('name', 'like', '%' . $name . '%')->get();
 
         if ($category->isEmpty()) {
             return response()->json([
