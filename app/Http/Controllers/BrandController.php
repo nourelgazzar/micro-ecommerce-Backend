@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class BrandController extends Controller
 {
@@ -29,25 +28,18 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
+        $this->validate($request, [
+            'name' => 'required|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages(),
-            ]);
-        } else {
-            $brand = new Brand;
-            $brand->name = $request->name;
-            $brand->save();
+        $brand = new Brand;
+        $brand->name = $request->name;
+        $brand->save();
 
-            return response()->json([
-                'status' => 201,
-                'message' => 'Brand created successfully',
-            ]);
-        }
+        return response()->json([
+            'status' => 201,
+            'message' => 'Brand created successfully',
+        ]);
     }
 
     /**
@@ -70,24 +62,17 @@ class BrandController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
+        $this->validate($request, [
+            'name' => 'required|string',
         ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages(),
-            ]);
-        } else {
-            $brand = Brand::find($id);
-            $brand->name = $request->name;
-            $brand->update();
+        $data = Brand::find($id);
+        $data->name = $request->name;
+        $data->update();
 
-            return response()->json([
-                'status' => 200,
-                'message' => 'Brand updated successfully',
-            ]);
-        }
+        return response()->json([
+            'status' => 200,
+            'message' => 'Brand updated successfully',
+        ]);
     }
 
     /**
@@ -99,21 +84,20 @@ class BrandController extends Controller
 ////////////////////////////////
     public function destroy($id)
     {
-       // $brand = Brand::find($id);
-        //  return $productsOfBrand=Product::where('brand_id', 'like', '%'.$id.'%')->get();
-        /*if (is_null($data)) {
+
+        $data = Brand::find($id);
+        if (is_null($data)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'Item Not Found!',
             ]);
-        } else {
-            $data->delete();
+        }
+        $data->delete();
 
-            return response()->json([
-                'status' => 200,
-                'message' => 'Brand deleted successfully',
-            ]);
-        }*/
+        return response()->json([
+            'status' => 200,
+            'message' => 'Brand deleted successfully',
+        ]);
     }
 
     public function search($name)
