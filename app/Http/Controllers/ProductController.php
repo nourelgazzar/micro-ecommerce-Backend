@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-      public function index()
-      {
+    public function index()
+    {
         $products = Product::all();
 
         return response()->json($products, 200);
-      }
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -52,7 +52,9 @@ class ProductController extends Controller
             ]);
         }
     }
-    public function show($id){
+
+    public function show($id)
+    {
         $product = Product::find($id);
         if (is_null($product)) {
             return response()->json([
@@ -62,29 +64,28 @@ class ProductController extends Controller
         } else {
             return response()->json($product, 200);
         }
-       
     }
+
 ///////////////////////////////////////////////
     public function delete($id)
     {
-    /*    $product = product::find($id);
+        $product = product::find($id);
         if (is_null($product)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'Item Not Found!',
             ]);
-        } else {
-            $product->categories()->detach();
-            $product->delete();
-            return response()->json([
-                'status' => 200,
-                'message' => 'product deleted successfully',
-            ]);
-        }*/
-        
+        }
+        $product->categories()->detach();
+        $product->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'product deleted successfully',
+        ]);
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
@@ -113,23 +114,24 @@ class ProductController extends Controller
             $product->is_available = 1;
             $product->categories()->attach($request->categories_ids);
             $product->update();
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Product updated successfully',
             ]);
         }
     }
+
     public function search($name)
     {
-    /*    $products = Product::where('name', 'like', '%'.$name.'%')->get();
-        $brands = Brand::where('name', 'like', '%'.$name.'%')->get();
-        if (!count($products)) {
+        $products = Product::where('name', 'like', '%'.$name.'%')->get();
+        if (! count($products)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'No Product found to be shown!',
             ]);
         }
 
-        return response()->json($products, 200);*/
+        return response()->json($products, 200);
     }
 }
