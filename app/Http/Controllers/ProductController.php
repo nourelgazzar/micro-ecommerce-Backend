@@ -121,8 +121,7 @@ class ProductController extends Controller
     }
     public function search($name)
     {
-    /*    $products = Product::where('name', 'like', '%'.$name.'%')->get();
-        $brands = Brand::where('name', 'like', '%'.$name.'%')->get();
+        $products = Product::where('name', 'like', '%'.$name.'%')->get();
         if (!count($products)) {
             return response()->json([
                 'status' => 404,
@@ -130,6 +129,7 @@ class ProductController extends Controller
             ]);
         }
 
-        return response()->json($products, 200);*/
+        return response()->json($products, 200);
     }
+
 }
