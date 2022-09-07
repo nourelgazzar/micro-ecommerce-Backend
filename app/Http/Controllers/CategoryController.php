@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -16,25 +15,18 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u', 'unique:categories'],
+        $this->validate($request, [
+            'name' => 'required|string|max:40|regex:/(^([a-zA-Z]+)(\d+)?$)/u|unique:categories',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages(),
-            ]);
-        } else {
-            $category = new Category;
-            $category->name = $request->name;
-            $category->save();
+        $category = new Category;
+        $category->name = $request->name;
+        $category->save();
 
-            return response()->json([
-                'status' => 201,
-                'message' => 'Category created successfully',
-            ]);
-        }
+        return response()->json([
+            'status' => 201,
+            'message' => 'Category created successfully',
+        ]);
     }
 
     public function show($id)
@@ -62,16 +54,9 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u', 'unique:categories'],
+        $this->validate($request, [
+            'name' => 'required|string|max:40|regex:/(^([a-zA-Z]+)(\d+)?$)/u|unique:categories',
         ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages(),
-            ]);
-        }
         $category = Category::find($id);
         if (! $category || empty($category)) {
             return response()->json([

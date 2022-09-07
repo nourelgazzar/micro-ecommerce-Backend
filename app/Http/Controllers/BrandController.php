@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class BrandController extends Controller
 {
@@ -28,25 +27,18 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request, [
             'name' => 'required|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages(),
-            ]);
-        } else {
-            $brand = new Brand;
-            $brand->name = $request->name;
-            $brand->save();
+        $brand = new Brand;
+        $brand->name = $request->name;
+        $brand->save();
 
-            return response()->json([
-                'status' => 201,
-                'message' => 'Brand created successfully',
-            ]);
-        }
+        return response()->json([
+            'status' => 201,
+            'message' => 'Brand created successfully',
+        ]);
     }
 
     /**
@@ -69,24 +61,17 @@ class BrandController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request, [
             'name' => 'required|string',
         ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages(),
-            ]);
-        } else {
-            $data = Brand::find($id);
-            $data->name = $request->name;
-            $data->update();
+        $data = Brand::find($id);
+        $data->name = $request->name;
+        $data->update();
 
-            return response()->json([
-                'status' => 200,
-                'message' => 'Brand updated successfully',
-            ]);
-        }
+        return response()->json([
+            'status' => 200,
+            'message' => 'Brand updated successfully',
+        ]);
     }
 
     /**
@@ -98,7 +83,7 @@ class BrandController extends Controller
     public function destroy($id)
     {
         $data = Brand::find($id);
-        if (is_null($var)) {
+        if (is_null($data)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'Item Not Found!',
