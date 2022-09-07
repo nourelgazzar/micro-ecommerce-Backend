@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -89,6 +88,7 @@ class CategoryController extends Controller
             ]);
         } else {
             $category->delele();
+
             return response()->json([
                 'status' => 200,
                 'message' => 'The category has been deleted!',
