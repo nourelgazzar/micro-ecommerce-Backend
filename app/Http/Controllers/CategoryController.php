@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -70,23 +71,21 @@ class CategoryController extends Controller
                 'status' => 422,
                 'errors' => $validator->messages(),
             ]);
-        } else {
-            $category = Category::find($id);
-            if (is_null($category) || empty($category)) {
-                return response()->json([
-                    'status' => 404,
-                    'errors' => 'No category found to be updated!',
-                ]);
-            } else {
-                $category->name = $request->name;
-                $category->save();
-
-                return response()->json([
-                    'status' => 200,
-                    'category' => $category,
-                ]);
-            }
         }
+        $category = Category::find($id);
+        if (! $category || empty($category)) {
+            return response()->json([
+                'status' => 404,
+                'errors' => 'No category found to be updated!',
+            ]);
+        }
+        $category->name = $request->name;
+        $category->save();
+
+        return response()->json([
+            'status' => 200,
+            'category' => $category,
+        ]);
     }
 
     /**
@@ -105,6 +104,10 @@ class CategoryController extends Controller
             ]);
         } else {
             $category->destroy($id);
+            $categoryProducts = CategoryProduct::find($id);
+            for ($i = 0; $i < count($categoryProducts); $i++) {
+                $categoryProducts[$i]->category_id = 1;
+            }
 
             return response()->json([
                 'status' => 200,
@@ -123,7 +126,7 @@ class CategoryController extends Controller
     {
         $category = Category::where('name', 'like', '%'.$name.'%')->get();
 
-        if (! count($category)) {
+        if ($category->isEmpty()) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'No category found to be shown!',

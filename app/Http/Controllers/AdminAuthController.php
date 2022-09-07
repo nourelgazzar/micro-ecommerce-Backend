@@ -25,11 +25,12 @@ class AdminAuthController extends Controller
                 'errors' => $validator->messages(),
             ]);
         }
+        $validated = $validator->validated();
         $admin = Admin::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
         ]);
 
         $token = $admin->createToken('resumetoken')->plainTextToken;
