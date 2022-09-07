@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('description');
             $table->boolean('is_available');
             $table->binary('image');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
