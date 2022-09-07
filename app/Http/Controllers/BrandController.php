@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,9 +16,9 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $data = Brand::all();
+        $brand = Brand::all();
 
-        return response()->json($data, 200);
+        return response()->json($brand, 200);
     }
 
     /**
@@ -29,7 +30,7 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
         ]);
 
         if ($validator->fails()) {
@@ -70,7 +71,7 @@ class BrandController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -78,9 +79,9 @@ class BrandController extends Controller
                 'errors' => $validator->messages(),
             ]);
         } else {
-            $data = Brand::find($id);
-            $data->name = $request->name;
-            $data->update();
+            $brand = Brand::find($id);
+            $brand->name = $request->name;
+            $brand->update();
 
             return response()->json([
                 'status' => 200,
@@ -95,10 +96,12 @@ class BrandController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+////////////////////////////////
     public function destroy($id)
     {
-        $data = Brand::find($id);
-        if (is_null($var)) {
+       // $brand = Brand::find($id);
+        //  return $productsOfBrand=Product::where('brand_id', 'like', '%'.$id.'%')->get();
+        /*if (is_null($data)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'Item Not Found!',
@@ -110,6 +113,19 @@ class BrandController extends Controller
                 'status' => 200,
                 'message' => 'Brand deleted successfully',
             ]);
+        }*/
+    }
+
+    public function search($name)
+    {
+        $brands = Brand::where('name', 'like', '%'.$name.'%')->get();
+        if (!count($brands)) {
+            return response()->json([
+                'status' => 404,
+                'errors' => 'No Brands found to be shown!',
+            ]);
         }
+
+        return response()->json($brands, 200);
     }
 }
