@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -10,9 +11,9 @@ class ProductController extends Controller
 {
       public function index()
       {
-        $data = Product::all();
+        $products = Product::all();
 
-        return response()->json($data, 200);
+        return response()->json($products, 200);
       }
     public function store(Request $request)
     {
@@ -52,33 +53,34 @@ class ProductController extends Controller
         }
     }
     public function show($id){
-        $data = Product::find($id);
-        if (is_null($data)) {
+        $product = Product::find($id);
+        if (is_null($product)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'Item Not Found!',
             ]);
         } else {
-            return response()->json($data, 200);
+            return response()->json($product, 200);
         }
        
     }
-
+///////////////////////////////////////////////
     public function delete($id)
     {
-        $data = product::find($id);
-        if (is_null($data)) {
+    /*    $product = product::find($id);
+        if (is_null($product)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'Item Not Found!',
             ]);
         } else {
-            $data->delete();
+            $product->categories()->detach();
+            $product->delete();
             return response()->json([
                 'status' => 200,
                 'message' => 'product deleted successfully',
             ]);
-        }
+        }*/
         
     }
 
@@ -119,15 +121,15 @@ class ProductController extends Controller
     }
     public function search($name)
     {
-        $data = Product::where('name', 'like', '%'.$name.'%')->get();
-
-        if (! count($data)) {
+    /*    $products = Product::where('name', 'like', '%'.$name.'%')->get();
+        $brands = Brand::where('name', 'like', '%'.$name.'%')->get();
+        if (!count($products)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'No Product found to be shown!',
             ]);
         }
 
-        return response()->json($data, 200);
+        return response()->json($products, 200);*/
     }
 }
