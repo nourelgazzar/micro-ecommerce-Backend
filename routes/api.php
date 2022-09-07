@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,7 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin
         Route::post('{id}', [ProductController::class, 'show']);
         Route::delete('{id}', [ProductController::class, 'delete']);
         Route::get('search/{name}', [ProductController::class, 'search']);
+      //  Route::get('homesearch/{name}', [ProductController::class, 'searchByAll']);
         Route::put('{id}', [ProductController::class, 'update']);
     }
     );
