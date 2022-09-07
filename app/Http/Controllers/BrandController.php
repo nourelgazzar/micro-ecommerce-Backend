@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
@@ -14,9 +15,9 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $data = Brand::all();
+        $brand = Brand::all();
 
-        return response()->json($data, 200);
+        return response()->json($brand, 200);
     }
 
     /**
@@ -80,21 +81,35 @@ class BrandController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+////////////////////////////////
     public function destroy($id)
     {
+
         $data = Brand::find($id);
         if (is_null($data)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'Item Not Found!',
             ]);
-        } else {
-            $data->delete();
+        }
+        $data->delete();
 
+        return response()->json([
+            'status' => 200,
+            'message' => 'Brand deleted successfully',
+        ]);
+    }
+
+    public function search($name)
+    {
+        $brands = Brand::where('name', 'like', '%'.$name.'%')->get();
+        if (!count($brands)) {
             return response()->json([
-                'status' => 200,
-                'message' => 'Brand deleted successfully',
+                'status' => 404,
+                'errors' => 'No Brands found to be shown!',
             ]);
         }
+
+        return response()->json($brands, 200);
     }
 }
