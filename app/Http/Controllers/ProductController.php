@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Brand;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -70,21 +69,20 @@ class ProductController extends Controller
 ///////////////////////////////////////////////
     public function delete($id)
     {
-       $product = product::find($id);
+        $product = product::find($id);
         if (is_null($product)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'Item Not Found!',
             ]);
-        } 
-            $product->categories()->detach();
-            $product->delete();
-            return response()->json([
-                'status' => 200,
-                'message' => 'product deleted successfully',
-            ]);
-        
-       
+        }
+        $product->categories()->detach();
+        $product->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'product deleted successfully',
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -126,9 +124,8 @@ class ProductController extends Controller
 
     public function search($name)
     {
-
         $products = Product::where('name', 'like', '%'.$name.'%')->get();
-        if (!count($products)) {
+        if (! count($products)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'No Product found to be shown!',
@@ -137,5 +134,4 @@ class ProductController extends Controller
 
         return response()->json($products, 200);
     }
- 
 }

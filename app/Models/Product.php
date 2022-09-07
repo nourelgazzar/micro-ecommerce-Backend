@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Product extends Model
 {
     use HasFactory,SoftDeletes;
+
     protected $dates = ['deleted_at'];
+
     public function brand()
     {
         return $this->belongsTo('App\Models\Brand');

@@ -91,6 +91,7 @@ class BrandController extends Controller
             ]);
         }
         $brand->delete();
+
         return response()->json([
             'status' => 200,
             'message' => 'Brand deleted successfully',
