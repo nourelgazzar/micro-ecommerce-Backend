@@ -15,16 +15,24 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:40|regex:/(^([a-zA-Z]+)(\d+)?$)/u|unique:categories',
+            'names' => "required|array|min:1",
+            'names.*' => 'required|string|max:40|regex:/(^([a-zA-Z ]+)(\d+)?$)/u|unique:categories,name',
         ]);
+        $category_ids = [];
 
-        $category = new Category;
-        $category->name = $request->name;
-        $category->save();
+        foreach($request->names as $name)
+        {
+            $category = new Category;
+            $category->name = $name;
+            $category->save();
+            array_push($category_ids, $category->id);
+        }
+        
 
         return response()->json([
             'status' => 201,
-            'message' => 'Category created successfully',
+            'message' => 'Categories created successfully',
+            'category_ids' => $category_ids,
         ]);
     }
 
