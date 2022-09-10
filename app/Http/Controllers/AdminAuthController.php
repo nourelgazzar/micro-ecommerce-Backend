@@ -13,7 +13,7 @@ class AdminAuthController extends Controller
         $this->validate($request, [
             'first_name' => 'required|string|max:20|regex:/(^([a-zA-Z]+)?$)/u',
             'last_name' => 'required|string|max:20|regex:/(^([a-zA-Z]+)?$)/u',
-            'email' => 'required|string|unique:users,email|email|max:40',
+            'email' => 'required|string|unique:admins,email|email|max:40',
             'password' => 'required|string|confirmed|max:40',
         ]);
         $admin = Admin::create([
@@ -23,11 +23,8 @@ class AdminAuthController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
-        $token = $admin->createToken('resumetoken')->plainTextToken;
-
         $response = [
             'admin' => $admin,
-            'token' => $token,
         ];
 
         return response($response, 201);
@@ -57,7 +54,7 @@ class AdminAuthController extends Controller
             'token' => $token,
         ];
 
-        return response($response, 201);
+        return response($response, 200);
     }
 
     public function logout()
