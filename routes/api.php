@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
@@ -20,8 +21,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('/admin/register', [AdminAuthController::class, 'register']);
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
 
+Route::post('/user/register', [UserAuthController::class, 'register']);
+Route::post('/user/login', [UserAuthController::class, 'login']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
+    Route::post('/user/logout', [UserAuthController::class, 'logout']);
 });
 
 Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin']], function () {
