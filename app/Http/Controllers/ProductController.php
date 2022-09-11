@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\CategoryProduct;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -122,16 +126,51 @@ class ProductController extends Controller
         }
     }
 
-    public function search($name)
+    public function filter_and_search(Request $request)
     {
-        $products = Product::where('name', 'like', '%'.$name.'%')->get();
-        if (! count($products)) {
-            return response()->json([
-                'status' => 404,
-                'errors' => 'No Product found to be shown!',
-            ]);
+        $query = collect();
+        if (! empty($request->product_name)) {
+            $products = Product::where('name', 'like', '%'.$request->product_name.'%')->get();
+            $query = $query->merge($products);
+            $query = $query->unique(function ($entry) {
+                return $entry;
+            });
+            
+        }
+        if (! empty($request->brand)) {
+            $brand_id = Brand::where('name', '=', $request->brand)->value('id');
+            $products = Product::where('brand_id', '=', $brand_id)->get();
+            $query = $query->merge($products);
+            $query = $query->unique(function ($entry) {
+                return $entry;
+            });
+        }
+        if (! empty($request->category)) {
+            $category_id = Category::where('name', '=', $request->category)->value('id');
+            
+            $product_categories = DB::table('category_product')->where('category_id', '=', $category_id)->value('product_id');
+            $arr = array();
+            array_push($arr, $product_categories);
+            
+            foreach($arr as $id)
+            {
+                $product = Product::where('id', '=', $id)->get();
+                $query = $query->merge($product);
+            }
+            $query = $query->unique(function ($entry) {
+                return $entry;
+            });
+        }
+        if (! empty($request->price_min) && ! empty($request->price_max)) {
+            $products = DB::table('products')
+                            ->whereBetween('price', [$request->price_min, $request->price_max])
+                            ->get();
+            $query = $query->merge($products);
+            $query = $query->unique(function ($entry) {
+                return $entry;
+            });
         }
 
-        return response()->json($products, 200);
+        return response()->json($query, 200);
     }
 }
