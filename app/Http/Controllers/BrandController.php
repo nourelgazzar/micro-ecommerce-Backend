@@ -50,7 +50,18 @@ class BrandController extends Controller
      */
     public function show($id)
     {
-        //
+        $brand = Brand::find($id);
+        if (is_null($brand)) {
+            return response()->json([
+                'status' => 404,
+                'errors' => 'No brand found to be shown!',
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'brand' => $brand,
+        ]);
     }
 
     /**
