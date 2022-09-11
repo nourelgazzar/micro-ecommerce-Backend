@@ -22,8 +22,10 @@ class AdminAuthController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
-        $admin->assignRole('admin');
-
+<<<<<<< HEAD
+=======
+        
+>>>>>>> efc6b7f44b5ba89c2fe4b446466592dbd8fd7e61$admin->assignRole('admin');
         $response = [
             'admin' => $admin,
         ];
