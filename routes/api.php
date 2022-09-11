@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,3 +47,6 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin
     Route::apiResource('brands', BrandController::class);
     Route::get('brands/search/{name}', [BrandController::class, 'search']);
 });
+
+
+Route::post('/orders', [OrderController::class, 'create']);
