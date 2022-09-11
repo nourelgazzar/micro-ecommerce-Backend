@@ -17,22 +17,18 @@ class UserAuthController extends Controller
             'email' => 'required|string|unique:admins,email|email|max:40',
             'password' => 'required|string|confirmed|max:40',
         ]);
+        $cart = Cart::create([]);
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'balance' => 10000
+            'balance' => 10000,
+            'cart_id' => $cart->id,
         ]);
-
-        $cart = Cart::create([
-            'user_id' => $user->id
-        ]);
-        $user->cart_id = $cart->id;
 
         $response = [
             'user' => $user,
-            'cart' => $cart
         ];
 
         return response($response, 201);
