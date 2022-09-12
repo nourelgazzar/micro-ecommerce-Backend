@@ -28,17 +28,23 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:40|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
+            'names' => "required|array|min:1",
+            'names.*' => 'required|string|max:40|regex:/(^([a-zA-Z ]+)(\d+)?$)/u',
         ]);
+        $brand_ids = [];
 
-        $brand = new Brand;
-        $brand->name = $request->name;
-        $brand->save();
+        foreach ($request->names as $name) {
+            $brand = new Brand;
+            $brand->name = $name;
+            $brand->save();
+            array_push($brand_ids, $brand->id);
+        }
+
 
         return response()->json([
             'status' => 201,
-            'message' => 'Brand created successfully',
-            'brand_id' => $brand->id,
+            'message' => 'Brands created successfully',
+            'brand_ids' => $brand_ids,
         ]);
     }
 
