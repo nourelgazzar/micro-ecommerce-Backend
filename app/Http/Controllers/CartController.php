@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use App\Models\Cart;
 use App\Models\Product;
 use App\Models\CartDetail;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -36,7 +35,9 @@ class CartController extends Controller
             'cart_detail' => $cart_detail,
         ]);
     }
-    public function remove($product_id)
+
+
+    public function delete($product_id)
     {
         $cart_detail = CartDetail::where('product_id', '=', $product_id);
         if (is_null($cart_detail) || empty($cart_detail)) {
@@ -53,15 +54,40 @@ class CartController extends Controller
             ]);
         }
     }
-    public function update()
+
+
+    public function update($cart_id)
     {
-        
+        $cart_details = CartDetail::where('cart_id', '=', $cart_id);
+        foreach($cart_details as $cart_detail)
+        {
+            $product_quantity = Product::find($cart_detail->product_id)->value('quantity');
+            if ($product_quantity < $cart_detail->no_items)
+            {
+                $cart_detail->no_items = $product_quantity;
+                $cart_detail->save();
+            }
+        }
     }
-    public function index($cart_id)
+
+
+    public function show($cart_id)
     {
+        $cart_details = CartDetail::where('cart_id', '=', $cart_id);
+        foreach($cart_details as $cart_detail)
+        {
+            $product_quantity = Product::find($cart_detail->product_id)->value('quantity');
+            if ($product_quantity < $cart_detail->no_items)
+            {
+                $cart_detail->no_items = $product_quantity;
+                $cart_detail->save();
+            }
+        }
         $cart_details = CartDetail::where('cart_id', '=', $cart_id);
         return $cart_details;
     }
+
+
     public function edit(Request $request)
     {
         
@@ -77,18 +103,28 @@ class CartController extends Controller
                 'errors' => 'No category found to be updated!',
             ]);
         }
-        $cart_detail->no_items = $request->no_items;
-        $cart_detail->save();
-
+        
+        $product_quantity = Product::find($request->product_id)->value('quantity');
+        
+        if ($request->no_items > $product_quantity)
+        {
+            DB::table('cart_details')->where('cart_id', $request->cart_id)->where('product_id', $request->product_id)->update(['no_items' => $product_quantity]);
+            
+        }
+        else
+        {
+            DB::table('cart_details')->where('cart_id', $request->cart_id)->where('product_id', $request->product_id)->update(['no_items' => $request->no_items]);
+        }
         return response()->json([
             'status' => 200,
-            'category' => $cart_detail,
         ]);
 
     }
+
+
     public function clear($cart_id)
     {
-        $cart_detail = CartDetail::where('cart_id', '=', $cart_id)->first();
+        $cart_detail = CartDetail::where('cart_id', '=', $cart_id);
         while($cart_detail || !empty($cart_detail))
         {
             $cart_detail->delete();

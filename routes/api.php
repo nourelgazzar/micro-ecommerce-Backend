@@ -28,7 +28,15 @@ Route::post('/user/login', [UserAuthController::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
     Route::post('/user/logout', [UserAuthController::class, 'logout']);
-    Route::post('/cart/add', [CartController::class, 'add']);
+    Route::group(['prefix' => 'user/carts/'],function () {
+        Route::post('add', [CartController::class, 'add']);
+        Route::delete('delete/{product_id}', [CartController::class, 'delete']);
+        Route::put('edit', [CartController::class, 'edit']);
+        Route::get('{cart_id}', [CartController::class, 'show']);
+        Route::delete('clear/{cart_id}', [CartController::class, 'clear']);
+        
+    });
+    
 });
 
 Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin']], function () {
@@ -40,9 +48,7 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin
     Route::delete('categories/{id}', [CategoryController::class, 'destroy']);
 
 
-    Route::group(
-        ['prefix' => 'products/'],
-        function () {
+    Route::group(['prefix' => 'products/'],function () {
             Route::post('filter', [ProductController::class, 'filter_and_search']);
             Route::post('', [ProductController::class, 'store']);
             Route::get('', [ProductController::class, 'index']);
