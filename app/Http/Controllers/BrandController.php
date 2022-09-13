@@ -118,7 +118,7 @@ class BrandController extends Controller
     public function search($name)
     {
         $brands = Brand::where('name', 'like', '%'.$name.'%')->get();
-        if (! count($brands)) {
+        if ($brands->isEmpty()) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'No Brands found to be shown!',

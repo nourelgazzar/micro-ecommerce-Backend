@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Http\Controllers\CartController;
 use App\Models\Cart;
+use App\Models\CartDetail;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\DB;
@@ -19,17 +20,20 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-            $cart_ids = Cart::all()->value('id');
-            $cart_ids_array = [];
-            array_push($cart_ids_array, $cart_ids);
-            foreach ($cart_ids_array as $cart_id) {
-                $last_updated_at_record = DB::table('cart_details')->where('cart_id', '=', $cart_id)->orderBy('updated_at', 'desc')->first();
-                $first = strtotime(now());
-                $last = strtotime($last_updated_at_record->updated_at);
-
-                if ($first - $last >= 60) {
-                    (new CartController)->clear($cart_id);
+            $data = date('H:i:s', strtotime(now())-60);
+            $carts = Cart::join('cart_details', 'carts.id', '=', 'cart_details.cart_id')->whereTime('cart_details.updated_at', '<=',$data)->orderBy('cart_details.updated_at', 'desc')->get();
+            $carts->toArray();
+            $cart_id_check = 0;
+            foreach ($carts as $cart) {
+                
+                if ($cart_id_check != $cart->cart_id) {
+                    $cart_details = CartDetail::where('cart_id', '=', $cart->cart_id)->get();
+                    $cart_details->toArray();
+                    foreach ($cart_details as $cart_detail) {
+                        CartDetail::where('cart_id', $cart_detail->cart_id)->where('product_id', $cart_detail->product_id)->delete();
+                    }
                 }
+                $cart_id_check = $cart->cart_id;
             }
         })->everyMinute();
     }

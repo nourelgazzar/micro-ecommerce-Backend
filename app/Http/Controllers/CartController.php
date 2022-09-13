@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CartDetail;
+use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -44,14 +45,14 @@ class CartController extends Controller
                 'status' => 404,
                 'errors' => 'No product found to be removed!',
             ]);
-        } else {
-            $cart_detail->delete();
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'The product has been removed from the cart!',
-            ]);
         }
+        $cart_detail->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'The product has been removed from the cart!',
+        ]);
+        
     }
 
     public function update($cart_id)
@@ -70,15 +71,26 @@ class CartController extends Controller
     {
         $cart_details = CartDetail::where('cart_id', '=', $cart_id)->get();
         $cart_details->toArray();
+        $total_price = 0;
         foreach ($cart_details as $cart_detail) {
-            $product_quantity = Product::find($cart_detail->product_id)->value('quantity');
-            if ($product_quantity < $cart_detail->no_items) {
-                DB::table('cart_details')->where('cart_id', $cart_detail->cart_id)->where('product_id', $cart_detail->product_id)->update(['no_items' => $product_quantity]);
+            $product = Product::find($cart_detail->product_id);
+            
+            if ($product->quantity < $cart_detail->no_items) {
+                CartDetail::where('cart_id', $cart_detail->cart_id)->where('product_id', $cart_detail->product_id)->update(['no_items' => $product->quantity]);
+                $total_price += $product->price * $product->quantity;
+            }
+            else
+            {
+                $total_price += $product->price * $cart_detail->no_items;
             }
         }
         $cart_details = CartDetail::where('cart_id', '=', $cart_id)->get();
 
-        return $cart_details;
+        return response()->json([
+            'status' => 200,
+            'cart_details' => $cart_details,
+            'total_price' => $total_price
+        ]);
     }
 
     public function edit(Request $request)
@@ -99,9 +111,9 @@ class CartController extends Controller
         $product_quantity = Product::find($request->product_id)->value('quantity');
 
         if ($request->no_items > $product_quantity) {
-            DB::table('cart_details')->where('cart_id', $request->cart_id)->where('product_id', $request->product_id)->update(['no_items' => $product_quantity]);
+            CartDetail::where('cart_id', $request->cart_id)->where('product_id', $request->product_id)->update(['no_items' => $product_quantity]);
         } else {
-            DB::table('cart_details')->where('cart_id', $request->cart_id)->where('product_id', $request->product_id)->update(['no_items' => $request->no_items]);
+            CartDetail::where('cart_id', $request->cart_id)->where('product_id', $request->product_id)->update(['no_items' => $request->no_items]);
         }
 
         return response()->json([
@@ -121,7 +133,7 @@ class CartController extends Controller
         }
 
         foreach ($cart_details as $cart_detail) {
-            DB::table('cart_details')->where('cart_id', $cart_detail->cart_id)->where('product_id', $cart_detail->product_id)->delete();
+            CartDetail::where('cart_id', $cart_detail->cart_id)->where('product_id', $cart_detail->product_id)->delete();
         }
 
         return response()->json([
