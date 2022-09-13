@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admin;
+use App\Models\User;
+use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class AdminAuthController extends Controller
+class UserAuthController extends Controller
 {
     public function register(Request $request)
     {
@@ -16,15 +17,18 @@ class AdminAuthController extends Controller
             'email' => 'required|string|unique:admins,email|email|max:40',
             'password' => 'required|string|confirmed|max:40',
         ]);
-        $admin = Admin::create([
+        $cart = Cart::create([]);
+        $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'balance' => 10000,
+            'cart_id' => $cart->id,
         ]);
-        $admin->assignRole('admin');
+
         $response = [
-            'admin' => $admin,
+            'user' => $user,
         ];
 
         return response($response, 201);
@@ -37,8 +41,8 @@ class AdminAuthController extends Controller
             'password' => 'required|string|max:40',
         ]);
 
-        $admin = Admin::where('email', $request->email)->first();
-        if (! $admin || ! Hash::check($request->password, $admin->password)) {
+        $user = User::where('email', $request->email)->first();
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return response(
                 [
                     'Response' => 'Please enter the right email or password!',
@@ -47,10 +51,10 @@ class AdminAuthController extends Controller
             );
         }
 
-        $token = $admin->createToken('admintoken')->plainTextToken;
+        $token = $user->createToken('admintoken')->plainTextToken;
 
         $response = [
-            'admin' => $admin,
+            'admin' => $user,
             'token' => $token,
         ];
 
