@@ -9,6 +9,7 @@ use App\Models\OrderDetail;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 class OrderController extends Controller{
    public function show($user_id)
@@ -24,7 +25,7 @@ class OrderController extends Controller{
     $mid_array=array();
     //list of prders
 
-      $orders = Order::where('user_id', 'like', '%'.$user_id.'%')->get();
+      $orders = Order::where('user_id', '=', $user_id)->get();
       if(count($orders)==0){
         return response()->json([
             'status' => 404,
@@ -79,7 +80,8 @@ class OrderController extends Controller{
         ]);
     }
      //List of rows 
-    $cart_details=CartDetail::where('cart_id', 'like', '%'.$request->cart_id.'%')->get();
+    $cart_details=CartDetail::where('cart_id', '=', $request->cart_id)->get();
+    //return $cart_details;
     if(count($cart_details)==0){
         return response()->json([
             'status' => 404,
@@ -89,7 +91,7 @@ class OrderController extends Controller{
     $order = new Order;
     $order->user_id = $request->user_id;
     $order->price = 0;
-    $order->invoice_number = rand(999,9999);;
+    $order->invoice_number = Str::uuid();
     $order->save();
     $total_price=0;
     foreach ($cart_details as $cart_detail)
@@ -118,7 +120,7 @@ class OrderController extends Controller{
 
     return response()->json([
         'status' => 200,
-        'order' => $order_new,
+        'order' => $order,
     ]);
    }
 
@@ -132,11 +134,12 @@ class OrderController extends Controller{
         ]);
      }
     
-     $order_details = OrderDetail::where('order_id', 'like', '%'.$id.'%')->get();
-     foreach ($order_details as $order_detail)
+     $order_details = OrderDetail::where('order_id', 'like', '%'.$id.'%')->delete();
+    /* foreach ($order_details as $order_detail)
      { 
         $order_detail->delete();
      }
+     */
      $order->delete();
      return response()->json([
         'status' => 200,
