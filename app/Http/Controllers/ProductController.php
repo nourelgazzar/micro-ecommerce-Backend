@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Category;
-use App\Models\CategoryProduct;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -135,7 +134,6 @@ class ProductController extends Controller
             $query = $query->unique(function ($entry) {
                 return $entry;
             });
-            
         }
         if (! empty($request->brand)) {
             $brand_id = Brand::where('name', '=', $request->brand)->value('id');
@@ -147,13 +145,12 @@ class ProductController extends Controller
         }
         if (! empty($request->category)) {
             $category_id = Category::where('name', '=', $request->category)->value('id');
-            
+
             $product_categories = DB::table('category_product')->where('category_id', '=', $category_id)->value('product_id');
-            $arr = array();
+            $arr = [];
             array_push($arr, $product_categories);
-            
-            foreach($arr as $id)
-            {
+
+            foreach ($arr as $id) {
                 $product = Product::where('id', '=', $id)->get();
                 $query = $query->merge($product);
             }
