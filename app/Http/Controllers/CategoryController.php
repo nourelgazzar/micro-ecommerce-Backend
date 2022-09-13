@@ -15,7 +15,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'names' => "required|array|min:1",
+            'names' => 'required|array|min:1',
             'names.*' => 'required|string|max:40|regex:/(^([a-zA-Z ]+)(\d+)?$)/u',
         ]);
         $category_ids = [];
@@ -26,7 +26,6 @@ class CategoryController extends Controller
             $category->save();
             array_push($category_ids, $category->id);
         }
-
 
         return response()->json([
             'status' => 201,
@@ -64,7 +63,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:40|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
         ]);
         $category = Category::find($id);
-        if (!$category || empty($category)) {
+        if (! $category || empty($category)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'No category found to be updated!',
@@ -111,7 +110,7 @@ class CategoryController extends Controller
      */
     public function search($name)
     {
-        $category = Category::where('name', 'like', '%' . $name . '%')->get();
+        $category = Category::where('name', 'like', '%'.$name.'%')->get();
 
         if ($category->isEmpty()) {
             return response()->json([
