@@ -6,7 +6,6 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -50,17 +49,17 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin
     Route::put('categories/{id}', [CategoryController::class, 'update']);
     Route::delete('categories/{id}', [CategoryController::class, 'destroy']);
 
-    Route::group(['prefix' => 'products/'], function () {
-        Route::post('filter', [ProductController::class, 'filter_and_search']);
-        Route::post('', [ProductController::class, 'store']);
-        Route::get('', [ProductController::class, 'index']);
-        Route::post('{id}', [ProductController::class, 'show']);
-        Route::delete('{id}', [ProductController::class, 'delete']);
-        Route::put('{id}', [ProductController::class, 'update']);
-    }
+    Route::group(
+        ['prefix' => 'products/'],
+        function () {
+            Route::post('filter', [ProductController::class, 'filter_and_search']);
+            Route::post('', [ProductController::class, 'store']);
+            Route::get('', [ProductController::class, 'index']);
+            Route::post('{id}', [ProductController::class, 'show']);
+            Route::delete('{id}', [ProductController::class, 'delete']);
+            Route::put('{id}', [ProductController::class, 'update']);
+        }
     );
     Route::apiResource('brands', BrandController::class);
     Route::get('brands/search/{name}', [BrandController::class, 'search']);
 });
-
-
