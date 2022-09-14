@@ -6,6 +6,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,7 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin
     Route::get('categories/{id}', [CategoryController::class, 'show']);
     Route::put('categories/{id}', [CategoryController::class, 'update']);
     Route::delete('categories/{id}', [CategoryController::class, 'destroy']);
+    Route::get('analytics', [AdminController::class, 'analytics']);
 
 
     Route::group(
