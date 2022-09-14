@@ -69,7 +69,7 @@ class CartController extends Controller
     public function show($cart_id)
     {
         $cart_details = CartDetail::where('cart_id', '=', $cart_id)->get();
-        $cart_details->toArray();
+        
         $total_price = 0;
         foreach ($cart_details as $cart_detail) {
             $product = Product::find($cart_detail->product_id);
@@ -80,8 +80,11 @@ class CartController extends Controller
             } else {
                 $total_price += $product->price * $cart_detail->no_items;
             }
+            
+            $cart_detail->product = Product::find($cart_detail->product_id);
         }
-        $cart_details = CartDetail::where('cart_id', '=', $cart_id)->get();
+        
+    
 
         return response()->json([
             'status' => 200,
