@@ -60,10 +60,10 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:40|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
+            'name' => 'required|string|max:40|regex:/(^([a-zA-Z ]+)(\d+)?$)/u',
         ]);
         $category = Category::find($id);
-        if (! $category || empty($category)) {
+        if (!$category || empty($category)) {
             return response()->json([
                 'status' => 404,
                 'errors' => 'No category found to be updated!',
@@ -110,7 +110,7 @@ class CategoryController extends Controller
      */
     public function search($name)
     {
-        $category = Category::where('name', 'like', '%'.$name.'%')->get();
+        $category = Category::where('name', 'like', '%' . $name . '%')->get();
 
         if ($category->isEmpty()) {
             return response()->json([

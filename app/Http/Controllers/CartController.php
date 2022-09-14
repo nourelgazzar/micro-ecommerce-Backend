@@ -21,7 +21,7 @@ class CartController extends Controller
         $quantity = $product->quantity;
         if ($request->no_items > $quantity) {
             return response()->json([
-                'message' => 'The available quantity ='.$quantity.'.',
+                'message' => 'The available quantity =' . $quantity . '.',
             ]);
         }
         $cart_detail = CartDetail::create([
@@ -52,7 +52,6 @@ class CartController extends Controller
             'status' => 200,
             'message' => 'The product has been removed from the cart!',
         ]);
-        
     }
 
     public function update($cart_id)
@@ -74,13 +73,11 @@ class CartController extends Controller
         $total_price = 0;
         foreach ($cart_details as $cart_detail) {
             $product = Product::find($cart_detail->product_id);
-            
+
             if ($product->quantity < $cart_detail->no_items) {
                 CartDetail::where('cart_id', $cart_detail->cart_id)->where('product_id', $cart_detail->product_id)->update(['no_items' => $product->quantity]);
                 $total_price += $product->price * $product->quantity;
-            }
-            else
-            {
+            } else {
                 $total_price += $product->price * $cart_detail->no_items;
             }
         }
@@ -101,10 +98,10 @@ class CartController extends Controller
             'no_items' => 'required|integer|numeric',
         ]);
         $cart_detail = CartDetail::where('product_id', '=', $request->product_id)->where('cart_id', '=', $request->cart_id);
-        if (! $cart_detail || empty($cart_detail)) {
+        if (!$cart_detail || empty($cart_detail)) {
             return response()->json([
                 'status' => 404,
-                'errors' => 'No category found to be updated!',
+                'errors' => 'No Product changes found to be updated!',
             ]);
         }
 
@@ -125,7 +122,7 @@ class CartController extends Controller
     {
         $cart_details = CartDetail::where('cart_id', '=', $cart_id)->get();
         $cart_details->toArray();
-        if (! count($cart_details)) {
+        if (!count($cart_details)) {
             return response()->json([
                 'status' => 400,
                 'message' => 'The cart is already empty!',

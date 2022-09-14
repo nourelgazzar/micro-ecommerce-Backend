@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\CategoryProduct;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,15 +14,23 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products_arr = array();
 
-        return response()->json($products, 200);
+        $products = Product::all();
+        foreach ($products as $product) {
+           
+            $product->categories = $product->categories()->get();
+        }
+        return response()->json([
+            'status' => 200,
+            'products' => $products,
+        ]);
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
+            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z ]+)(\d+)?$)/u'],
             'brand_id' => ['required'],
             'price' => ['required', 'integer', 'max:999999'],
             'quantity' => ['required', 'integer', 'max:999'],
@@ -69,7 +78,7 @@ class ProductController extends Controller
         }
     }
 
-///////////////////////////////////////////////
+    ///////////////////////////////////////////////
     public function delete($id)
     {
         $product = product::find($id);
@@ -91,7 +100,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z]+)(\d+)?$)/u'],
+            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z ]+)(\d+)?$)/u'],
             'brand_id' => ['required'],
             'price' => ['required', 'integer', 'max:999999'],
             'quantity' => ['required', 'integer', 'max:999'],
@@ -128,14 +137,14 @@ class ProductController extends Controller
     public function filter_and_search(Request $request)
     {
         $query = collect();
-        if (! empty($request->product_name)) {
-            $products = Product::where('name', 'like', '%'.$request->product_name.'%')->get();
+        if (!empty($request->product_name)) {
+            $products = Product::where('name', 'like', '%' . $request->product_name . '%')->get();
             $query = $query->merge($products);
             $query = $query->unique(function ($entry) {
                 return $entry;
             });
         }
-        if (! empty($request->brand)) {
+        if (!empty($request->brand)) {
             $brand_id = Brand::where('name', '=', $request->brand)->value('id');
             $products = Product::where('brand_id', '=', $brand_id)->get();
             $query = $query->merge($products);
@@ -143,7 +152,7 @@ class ProductController extends Controller
                 return $entry;
             });
         }
-        if (! empty($request->category)) {
+        if (!empty($request->category)) {
             $category_id = Category::where('name', '=', $request->category)->value('id');
 
             $product_categories = DB::table('category_product')->where('category_id', '=', $category_id)->value('product_id');
@@ -158,10 +167,10 @@ class ProductController extends Controller
                 return $entry;
             });
         }
-        if (! empty($request->price_min) && ! empty($request->price_max)) {
+        if (!empty($request->price_min) && !empty($request->price_max)) {
             $products = DB::table('products')
-                            ->whereBetween('price', [$request->price_min, $request->price_max])
-                            ->get();
+                ->whereBetween('price', [$request->price_min, $request->price_max])
+                ->get();
             $query = $query->merge($products);
             $query = $query->unique(function ($entry) {
                 return $entry;
