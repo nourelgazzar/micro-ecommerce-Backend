@@ -5,6 +5,8 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +30,9 @@ Route::post('/user/login', [UserAuthController::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
     Route::post('/user/logout', [UserAuthController::class, 'logout']);
+    Route::post('/orders', [OrderController::class, 'create']);
+    Route::delete('/orders/{id}', [OrderController::class, 'delete']);
+    Route::get('/orders/{user_id}', [OrderController::class, 'show']);
     Route::group(['prefix' => 'user/carts/'], function () {
         Route::post('add', [CartController::class, 'add']);
         Route::delete('delete/{product_id}', [CartController::class, 'delete']);
@@ -57,3 +62,5 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin
     Route::apiResource('brands', BrandController::class);
     Route::get('brands/search/{name}', [BrandController::class, 'search']);
 });
+
+

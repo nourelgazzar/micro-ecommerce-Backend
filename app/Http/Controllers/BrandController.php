@@ -78,7 +78,7 @@ class BrandController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:40|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
+            'name' => 'required|string|max:40|regex:/(^([a-zA-Z ]+)(\d+)?$)/u',
         ]);
         $data = Brand::find($id);
         $data->name = $request->name;
@@ -117,7 +117,7 @@ class BrandController extends Controller
 
     public function search($name)
     {
-        $brands = Brand::where('name', 'like', '%'.$name.'%')->get();
+        $brands = Brand::where('name', 'like', '%' . $name . '%')->get();
         if ($brands->isEmpty()) {
             return response()->json([
                 'status' => 404,
