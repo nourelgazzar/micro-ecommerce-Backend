@@ -4,17 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
+
+    protected $dates = ['deleted_at'];
 
     public function brand()
     {
         return $this->belongsTo('App\Models\Brand');
     }
 
-    public function cateogries()
+    public function categories()
     {
         return $this->belongsToMany('App\Models\Category');
     }

@@ -13,11 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->softDeletes();
-            $table->timestamps();
+        Schema::table('order_details', function (Blueprint $table) {
+            $table->foreignId('order_id')->constrained('orders')->nullable();
         });
     }
 
@@ -28,6 +25,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::table('order_details', function (Blueprint $table) {
+             $table->dropForeign('order_details_order_id_foreign');
+             $table->dropColumn('order_id');
+        });
     }
 };
