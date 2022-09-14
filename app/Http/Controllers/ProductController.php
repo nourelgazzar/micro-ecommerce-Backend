@@ -15,7 +15,11 @@ class ProductController extends Controller
     {
         $products = Product::all();
 
-        return response()->json($products, 200);
+        return response()->json([
+            'status' => 200,
+            'products' => $products,
+            'categories' => Category::all()
+        ]);
     }
 
     public function store(Request $request)
