@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\CategoryProduct;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,12 +14,16 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products_arr = array();
 
+        $products = Product::all();
+        foreach ($products as $product) {
+           
+            $product->categories = $product->categories()->get();
+        }
         return response()->json([
             'status' => 200,
             'products' => $products,
-            'categories' => Category::all()
         ]);
     }
 
