@@ -18,12 +18,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-            $data = date('H:i:s', strtotime(now())-60);
-            $carts = Cart::join('cart_details', 'carts.id', '=', 'cart_details.cart_id')->whereTime('cart_details.updated_at', '<=',$data)->orderBy('cart_details.updated_at', 'desc')->get();
+            $data = date('H:i:s', strtotime(now()) - 60);
+            $carts = Cart::join('cart_details', 'carts.id', '=', 'cart_details.cart_id')->whereTime('cart_details.updated_at', '<=', $data)->orderBy('cart_details.updated_at', 'desc')->get();
             $carts->toArray();
             $cart_id_check = 0;
             foreach ($carts as $cart) {
-                
                 if ($cart_id_check != $cart->cart_id) {
                     $cart_details = CartDetail::where('cart_id', '=', $cart->cart_id)->get();
                     $cart_details->toArray();

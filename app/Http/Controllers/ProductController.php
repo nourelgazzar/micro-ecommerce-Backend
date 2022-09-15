@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Category;
-use App\Models\CategoryProduct;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,13 +13,13 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products_arr = array();
+        $products_arr = [];
 
         $products = Product::all();
         foreach ($products as $product) {
-           
             $product->categories = $product->categories()->get();
         }
+
         return response()->json([
             'status' => 200,
             'products' => $products,
@@ -99,52 +98,45 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:40', 'regex:/(^([a-zA-Z ]+)(\d+)?$)/u'],
-            'brand_id' => ['required'],
-            'price' => ['required', 'integer', 'max:999999'],
-            'quantity' => ['required', 'integer', 'max:999'],
-            'description' => ['required', 'string', 'max:500'],
-            'image' => ['required'],
-            'categories_ids' => ['required'],
+        $this->validate($request, [
+            'name' => 'required|string|max:40|regex:/(^([a-zA-Z ]+)(\d+)?$)/u',
+            'brand_id' => 'required',
+            'price' => 'required|integer|max:999999',
+            'quantity' => 'required|integer|max:999',
+            'description' => 'required|string|max:500',
+            'image' => 'required',
+            'categories_ids' => 'required',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages(),
-            ]);
-        } else {
-            $product = Product::find($id);
-            $product->categories()->detach();
-            $product->name = $request->name;
-            $product->brand_id = $request->brand_id;
-            $product->price = $request->price;
-            $product->quantity = $request->quantity;
-            $product->description = $request->description;
-            $product->image = $request->image;
-            $product->is_available = 1;
-            $product->categories()->attach($request->categories_ids);
-            $product->update();
+        $product = Product::find($id);
+        $product->categories()->detach();
+        $product->name = $request->name;
+        $product->brand_id = $request->brand_id;
+        $product->price = $request->price;
+        $product->quantity = $request->quantity;
+        $product->description = $request->description;
+        $product->image = $request->image;
+        $product->is_available = 1;
+        $product->categories()->attach($request->categories_ids);
+        $product->update();
 
-            return response()->json([
-                'status' => 200,
-                'message' => 'Product updated successfully',
-            ]);
-        }
+        return response()->json([
+            'status' => 200,
+            'message' => 'Product updated successfully',
+        ]);
     }
 
     public function filter_and_search(Request $request)
     {
         $query = collect();
-        if (!empty($request->product_name)) {
-            $products = Product::where('name', 'like', '%' . $request->product_name . '%')->get();
+        if (! empty($request->product_name)) {
+            $products = Product::where('name', 'like', '%'.$request->product_name.'%')->get();
             $query = $query->merge($products);
             $query = $query->unique(function ($entry) {
                 return $entry;
             });
         }
-        if (!empty($request->brand)) {
+        if (! empty($request->brand)) {
             $brand_id = Brand::where('name', '=', $request->brand)->value('id');
             $products = Product::where('brand_id', '=', $brand_id)->get();
             $query = $query->merge($products);
@@ -152,7 +144,7 @@ class ProductController extends Controller
                 return $entry;
             });
         }
-        if (!empty($request->category)) {
+        if (! empty($request->category)) {
             $category_id = Category::where('name', '=', $request->category)->value('id');
 
             $product_categories = DB::table('category_product')->where('category_id', '=', $category_id)->value('product_id');
@@ -167,7 +159,7 @@ class ProductController extends Controller
                 return $entry;
             });
         }
-        if (!empty($request->price_min) && !empty($request->price_max)) {
+        if (! empty($request->price_min) && ! empty($request->price_max)) {
             $products = DB::table('products')
                 ->whereBetween('price', [$request->price_min, $request->price_max])
                 ->get();

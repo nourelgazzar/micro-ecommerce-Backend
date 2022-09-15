@@ -28,7 +28,7 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'names' => "required|array|min:1",
+            'names' => 'required|array|min:1',
             'names.*' => 'required|string|max:40|regex:/(^([a-zA-Z ]+)(\d+)?$)/u',
         ]);
         $brand_ids = [];
@@ -39,6 +39,7 @@ class BrandController extends Controller
             $brand->save();
             array_push($brand_ids, $brand->id);
         }
+
         return response()->json([
             'status' => 201,
             'message' => 'Brands created successfully',
@@ -87,7 +88,7 @@ class BrandController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'Brand updated successfully',
-            'data'   => $data
+            'data' => $data,
         ]);
     }
 
@@ -117,7 +118,7 @@ class BrandController extends Controller
 
     public function search($name)
     {
-        $brands = Brand::where('name', 'like', '%' . $name . '%')->get();
+        $brands = Brand::where('name', 'like', '%'.$name.'%')->get();
         if ($brands->isEmpty()) {
             return response()->json([
                 'status' => 404,
