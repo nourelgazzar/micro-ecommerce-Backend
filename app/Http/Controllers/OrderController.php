@@ -2,8 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Models\Cart;
+use App\Http\Controllers\CartController;
 use App\Models\CartDetail;
 use App\Models\OrderDetail;
 use App\Models\Order;
@@ -117,6 +116,7 @@ class OrderController extends Controller{
     $order_new = Order::find($order->id);
     $order_new->price = $total_price;
     $order_new->update();
+    (new CartController)->clear($request->cart_id);
 
     return response()->json([
         'status' => 200,
