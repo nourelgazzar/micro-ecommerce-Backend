@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->text('description');
             $table->boolean('is_available');
-            $table->binary('image');
+            $table->string('image');
             $table->softDeletes();
             $table->timestamps();
         });
